@@ -2,36 +2,36 @@
 using BenchmarkDotNet.Running;
 using ConsoleApp1;
 using ConsoleApp1.BruteForce;
-using System.Text;
+using TextSearcher.BruteForce;
 
 
 [MemoryDiagnoser]
 public class SearchBenchmark
 {
-    private readonly List<List<List<TextSegment>>> document;
-    private readonly List<List<List<TextSegment2>>> document2;
-    private readonly TextSearcherBruteForceWithRecord textSearcherBruteForceWithRecord = new();
-    private readonly TextSearcherBruteForceWithClass textSearcherBruteForceWithClass = new();
+    private readonly List<List<List<TextSegmentStruct>>> documentUsingStructRecord;
+    private readonly List<List<List<TextSegment>>> documentUsingClass;
+    private readonly TextSearcherBruteForceUsingStructRecord textSearcherBruteForceUsingStructRecord = new();
+    private readonly TextSearcherBruteForceUsingClass textSearcherBruteForceUsingClass = new();
 
     public SearchBenchmark()
     {
         var ocrSimulation = new OCRSimulation();
-        var rawDocument = ocrSimulation.GenerateDocument(50, 50);
-        var rawDocument2 = ocrSimulation.GenerateDocument2(50, 50);
+        var rawDocumentUsingStructRecord = ocrSimulation.GenerateDocumentUsingStructRecord(50, 50);
+        var rawDocumentUsingClass = ocrSimulation.GenerateDocumentUsingClass(50, 50);
         var lineBuilder = new LineBuilder();
-        document = rawDocument.Select(page => lineBuilder.BuildLines(page)).ToList();
-        document2 = rawDocument2.Select(page => lineBuilder.BuildLines2(page)).ToList();
+        documentUsingStructRecord = rawDocumentUsingStructRecord.Select(page => lineBuilder.BuildLines(page)).ToList();
+        documentUsingClass = rawDocumentUsingClass.Select(page => lineBuilder.BuildLines(page)).ToList();
     }
 
    [Benchmark]
     public void BruteForceSearchWithStructRecord()
     {
-        textSearcherBruteForceWithRecord.Search(document, "dear");
+        textSearcherBruteForceUsingStructRecord.Search(documentUsingStructRecord, "dear");
     }
     [Benchmark]
     public void BruteForceSearchWithClass()
     {
-        textSearcherBruteForceWithClass.Search(document2, "dear");
+        textSearcherBruteForceUsingClass.Search(documentUsingClass, "dear");
     }
 }
 

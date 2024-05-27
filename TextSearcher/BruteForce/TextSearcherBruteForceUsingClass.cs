@@ -1,17 +1,19 @@
-﻿using System;
+﻿using ConsoleApp1.BruteForce;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleApp1.BruteForce
+namespace TextSearcher.BruteForce
 {
-    public class TextSearcherBruteForceWithClass
+    public class TextSearcherBruteForceUsingClass
     {
+
         public List<(int PageIndex, int LineIndex)> Search(
-            List<List<List<TextSegment2>>> document,
-            string searchText,
-            bool caseSensitive = false)
+           List<List<List<TextSegment>>> document,
+           string searchText,
+           bool caseSensitive = false)
         {
             var results = new List<(int PageIndex, int LineIndex)>();
             var comparison = caseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
@@ -33,11 +35,11 @@ namespace ConsoleApp1.BruteForce
 
             return results;
         }
-        private ReadOnlySpan<char> MergeSegments(List<TextSegment2> segments, bool caseSensitive)
+        private string MergeSegments(List<TextSegment> segments, bool caseSensitive)
         {
             if (segments.Count == 0)
             {
-                return ReadOnlySpan<char>.Empty;
+                return string.Empty;
             }
 
             segments.Sort((a, b) => a.Left.CompareTo(b.Left));
@@ -54,7 +56,7 @@ namespace ConsoleApp1.BruteForce
                     var overlapLength = currentSegment.Right - nextSegment.Left + 1;
                     var nonOverlapText = nextSegment.Text.AsSpan(Math.Max(0, overlapLength));
                     mergedText.Append(caseSensitive ? nonOverlapText : nonOverlapText.ToString().ToLowerInvariant());
-                    currentSegment = new TextSegment2(
+                    currentSegment = new TextSegment(
                         currentSegment.Text + nextSegment.Text,
                         currentSegment.Left,
                         Math.Max(currentSegment.Right, nextSegment.Right),
@@ -69,7 +71,7 @@ namespace ConsoleApp1.BruteForce
                 }
             }
 
-            return mergedText.ToString().AsSpan();
+            return mergedText.ToString();
         }
     }
 }

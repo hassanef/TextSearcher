@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 
 namespace ConsoleApp1.BruteForce
 {
-    public class TextSearcherBruteForceWithRecord
+    public class TextSearcherBruteForceUsingStructRecord
     {
         public List<(int PageIndex, int LineIndex)> Search(
-            List<List<List<TextSegment>>> document,
+            List<List<List<TextSegmentStruct>>> document,
             ReadOnlySpan<char> searchText,
             bool caseSensitive = false)
         {
@@ -33,7 +29,7 @@ namespace ConsoleApp1.BruteForce
 
             return results;
         }
-        private ReadOnlySpan<char> MergeSegments(List<TextSegment> segments, bool caseSensitive)
+        private ReadOnlySpan<char> MergeSegments(List<TextSegmentStruct> segments, bool caseSensitive)
         {
             if (segments.Count == 0)
             {
@@ -58,7 +54,7 @@ namespace ConsoleApp1.BruteForce
                     var overlapLength = currentSegment.Right - nextSegment.Left + 1;
                     var nonOverlapText = nextSegment.Text.AsSpan(Math.Max(0, overlapLength));
                     mergedText += caseSensitive ? nonOverlapText.ToString() : nonOverlapText.ToString().ToLowerInvariant();
-                    currentSegment = new TextSegment(
+                    currentSegment = new TextSegmentStruct(
                         currentSegment.Text + nextSegment.Text, // Merged text
                         currentSegment.Left,
                         Math.Max(currentSegment.Right, nextSegment.Right), // Expanded right boundary
@@ -75,6 +71,7 @@ namespace ConsoleApp1.BruteForce
 
             return mergedText.AsSpan();
         }
+
 
     }
 }
